@@ -1,0 +1,1 @@
+export const makeMutable = (data: any) => JSON.parse(JSON.stringify(data));
