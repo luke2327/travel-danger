@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "admin",
+    "password": "asdlkj11411",
+    "database": "threat",
+    "host": "faker.cqpmauffywbw.ap-northeast-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "admin",
+    "password": "asdlkj11411",
+    "database": "threat",
+    "host": "faker.cqpmauffywbw.ap-northeast-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "admin",
+    "password": "asdlkj11411",
+    "database": "threat",
+    "host": "faker.cqpmauffywbw.ap-northeast-2.rds.amazonaws.com",
+    "dialect": "mysql"
+  }
+}

@@ -1,7 +1,7 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-import Dashboard from "../components/Dashboard";
+import type { NextPage } from "next";
+import Head from "next/head";
+import styles from "../styles/Home.module.css";
+import Map from "../components/KakaoMap";
 
 const Home: NextPage = () => {
   return (
@@ -13,10 +13,10 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <Dashboard />
+        <Map />
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
