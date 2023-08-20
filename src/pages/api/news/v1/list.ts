@@ -22,5 +22,5 @@ export default async function handler(
   }
   const response = await getNews(body);
 
-  res.status(200).json(response);
+  res.status(200).json(response as any);
 }
