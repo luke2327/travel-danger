@@ -2,7 +2,7 @@ import axios from "axios";
 import cheerio from "cheerio";
 
 // axios를 활용해 AJAX로 HTML 문서를 가져오는 함수 구현
-export async function getHTML(params: { keyword: string }) {
+export async function getNews(params: { keyword: string }) {
   try {
     const searchKeyWord = encodeURI(`${params.keyword}`);
 
@@ -20,6 +20,8 @@ export async function getHTML(params: { keyword: string }) {
         bodyList.each(function (i, elem) {
           titleList[i] = {
             title: $(this).find("div div a.news_tit").text(),
+            url: $(this).find("div div a.news_tit").attr("href"),
+            imgUrl: $(this).find("div a.dsc_thumb img").attr("data-lazysrc"),
           };
         });
         return titleList;

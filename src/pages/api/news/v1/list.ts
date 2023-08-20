@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import NextCors from "nextjs-cors";
 
 import { openGate } from "@/libs/common";
-import { getHTML } from "@/libs/news.service";
+import { getNews } from "@/libs/news.service";
 
 type Data = {
   name: string;
@@ -17,7 +17,7 @@ export default async function handler(
   const body = req.body as {
     keyword: string;
   };
-  const response = await getHTML(body);
+  const response = await getNews(body);
 
   res.status(200).json(response);
 }
