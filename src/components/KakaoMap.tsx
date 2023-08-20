@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Map } from "react-kakao-maps-sdk";
+
 import { makeMutable } from "@/libs/common";
+import type { ServerThreatList, ThreatList } from "@/models/Threat";
+
 import KakaoMapMarker from "./KakaoMapMarker";
-import { ServerThreatList, ThreatList } from "@/models/Threat";
 
 const KakaoMap = () => {
   const [threatList, setThreatList] = useState<ThreatList>([]);

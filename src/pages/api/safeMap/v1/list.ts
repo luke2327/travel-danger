@@ -1,7 +1,10 @@
+import type { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
-import axios, { AxiosRequestConfig } from "axios";
-import qs from "qs";
 import NextCors from "nextjs-cors";
+import qs from "qs";
+
+import { openGate } from "@/libs/common";
 
 type Data = {
   name: string;
@@ -14,7 +17,7 @@ const auth = {
   apiKey: "c65fe2aac3754104",
 };
 
-let config = {
+const config = {
   method: "post",
   maxBodyLength: Infinity,
   headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -24,14 +27,9 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  await NextCors(req, res, {
-    // Options
-    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-    origin: "*",
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  });
+  await openGate(req, res);
 
-  const body = req.body;
+  const { body } = req;
 
   config.url = "https://www.safe182.go.kr/api/lcm/safeMap.do";
   config.data = qs.stringify({
