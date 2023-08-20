@@ -14,9 +14,12 @@ export default async function handler(
 ) {
   await openGate(req, res);
 
-  const body = req.body as {
+  let body = req.body as {
     keyword: string;
   };
+  if (typeof body === "string") {
+    body = JSON.parse(body);
+  }
   const response = await getNews(body);
 
   res.status(200).json(response);

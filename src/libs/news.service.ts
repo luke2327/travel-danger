@@ -1,14 +1,33 @@
 import axios from "axios";
 import cheerio from "cheerio";
+import qs from "qs";
 
 // axios를 활용해 AJAX로 HTML 문서를 가져오는 함수 구현
 export async function getNews(params: { keyword: string }) {
-  try {
-    const searchKeyWord = encodeURI(`${params.keyword}`);
+  return getNewsNaver(params);
+}
 
-    return await axios
+async function getNewsNaver(params: { keyword: string }) {
+  const searchKeyWord = encodeURI(`${params.keyword}`);
+  const limit = 50 + 1;
+  const chunk = 10;
+  const query = {
+    where: "news",
+    ie: "utf8",
+    sm: "tab_opt",
+    sort: 1,
+  } as any;
+
+  const returnData = [];
+
+  for (let i = 1; i <= limit; i += chunk) {
+    query.start = i;
+
+    const data = await axios
       .get(
-        `https://search.naver.com/search.naver?where=news&ie=utf8&sm=nws_hty&query=${searchKeyWord}`
+        `https://search.naver.com/search.naver?query=${searchKeyWord}&${qs.stringify(
+          query
+        )}`
       )
       .then((html) => {
         const titleList = [] as any;
@@ -26,9 +45,9 @@ export async function getNews(params: { keyword: string }) {
         });
         return titleList;
       });
-  } catch (error) {
-    console.error(error);
 
-    return error;
+    returnData.push(...data);
   }
+
+  return returnData.filter((x) => x.imgUrl);
 }
