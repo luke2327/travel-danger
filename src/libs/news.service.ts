@@ -9,7 +9,7 @@ export async function getNews(params: { keyword: string }) {
 
 async function getNewsNaver(params: { keyword: string }) {
   const searchKeyWord = encodeURI(`${params.keyword}`);
-  const limit = 50 + 1;
+  const limit = 10 + 1;
   const chunk = 10;
   const query = {
     where: "news",
@@ -39,6 +39,10 @@ async function getNewsNaver(params: { keyword: string }) {
         bodyList.each(function (i, elem) {
           titleList[i] = {
             title: $(this).find("div div a.news_tit").text(),
+            desc: `${$(this)
+              .find("div div div.news_dsc div a")
+              .text()
+              .slice(0, 28)}...`,
             url: $(this).find("div div a.news_tit").attr("href"),
             imgUrl: $(this).find("div a.dsc_thumb img").attr("data-lazysrc"),
           };
