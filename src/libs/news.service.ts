@@ -3,8 +3,18 @@ import cheerio from "cheerio";
 import qs from "qs";
 
 // axios를 활용해 AJAX로 HTML 문서를 가져오는 함수 구현
-export async function getNews(params: { keyword: string }) {
-  return getNewsNaver(params);
+export async function getNews(params: {
+  keyword: string;
+  language: "ko" | "ja";
+}) {
+  if (params.language === "ko") {
+    return getNewsNaver(params);
+  }
+  if (params.language === "ja") {
+    return getNewsYahoo(params);
+  }
+
+  return [];
 }
 
 async function getNewsNaver(params: { keyword: string }) {
@@ -25,7 +35,7 @@ async function getNewsNaver(params: { keyword: string }) {
 
     const data = await axios
       .get(
-        `https://search.naver.com/search.naver?query=${searchKeyWord}&${qs.stringify(
+        `https://search.naver.com/search.naver?query=살인&${qs.stringify(
           query
         )}`
       )
@@ -39,14 +49,12 @@ async function getNewsNaver(params: { keyword: string }) {
         bodyList.each(function (i, elem) {
           titleList[i] = {
             title: $(this).find("div div a.news_tit").text(),
-            desc: `${$(this)
-              .find("div div div.news_dsc div a")
-              .text()
-              .slice(0, 28)}...`,
+            desc: $(this).find("div div div.news_dsc div a").text(),
             url: $(this).find("div div a.news_tit").attr("href"),
             imgUrl: $(this).find("div a.dsc_thumb img").attr("data-lazysrc"),
           };
         });
+
         return titleList;
       });
 
@@ -54,4 +62,50 @@ async function getNewsNaver(params: { keyword: string }) {
   }
 
   return returnData.filter((x) => x.imgUrl);
+}
+async function getNewsGoogle(params: { keyword: string }) {}
+async function getNewsYahoo(params: { keyword: string }) {
+  const query = {
+    where: "news",
+    ei: "utf-8",
+    categories: "world",
+    sort: 1,
+  } as any;
+  const url = `https://news.yahoo.co.jp/search?p=韓国 殺人&${qs.stringify(
+    query
+  )}`;
+  const returnData = [] as any;
+
+  await axios.get(url).then((html) => {
+    const $ = cheerio.load(html.data);
+
+    $("li.newsFeed_item-normal")
+      .children("a")
+      .each(function () {
+        const url = $(this).attr("href");
+        const imgUrl = $(this)
+          .find("picture source:first-child")
+          .attr("srcset");
+        const title = $(this)
+          .find(".newsFeed_item_text .newsFeed_item_title")
+          .text();
+        const desc = $(this)
+          .find(".newsFeed_item_text div:nth-child(2)")
+          .text()
+          .replace(/…/, "")
+          // eslint-disable-next-line no-irregular-whitespace
+          .replace(/ /, " ");
+        const time = $(this).find(".newsFeed_item_date").text();
+
+        returnData.push({
+          url,
+          imgUrl,
+          title,
+          desc,
+          time,
+        });
+      });
+  });
+
+  return returnData;
 }

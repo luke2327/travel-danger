@@ -1,8 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import NextCors from "nextjs-cors";
 
 import { openGate } from "@/libs/common";
-import { getNews } from "@/libs/news.service";
+import policeInfo from "@/libs/policeInfo";
 
 type Data = {
   name: string;
@@ -15,13 +14,21 @@ export default async function handler(
   await openGate(req, res);
 
   let body = req.body as {
-    keyword: string;
-    language: "ko" | "ja";
+    capital: keyof typeof policeInfo;
   };
-  if (typeof body === "string") {
+  let response: any = {};
+
+  if (body && typeof body === "string") {
     body = JSON.parse(body);
   }
-  const response = await getNews(body);
 
-  res.status(200).json(response as any);
+  if (body) {
+    const { capital } = body;
+
+    response = { [capital]: policeInfo[capital] };
+  } else {
+    response = policeInfo;
+  }
+
+  res.status(200).json(response);
 }
