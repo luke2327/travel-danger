@@ -5,7 +5,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { openGate } from "@/libs/common";
 
 type Data = {
-  name: string;
+  result: any;
 };
 
 const config = {
@@ -28,5 +28,11 @@ export default async function handler(
       console.log(error);
     });
 
-  res.status(200).json(response);
+  const result = response.result.data.json.threats.map((x: any) => {
+    const { objectType, id, ...r } = x;
+
+    return r;
+  });
+
+  res.status(200).json({ result: { data: { json: { threats: result } } } });
 }
