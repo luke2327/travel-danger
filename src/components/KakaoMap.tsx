@@ -1,12 +1,27 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { Map } from "react-kakao-maps-sdk";
+import { Circle, Map } from "react-kakao-maps-sdk";
 
 import { makeMutable } from "@/libs/common";
 import mapMatchInfo from "@/libs/mapMatchInfo";
 import type { ServerThreatList, ThreatList } from "@/models/Threat";
 
 import KakaoMapMarker from "./KakaoMapMarker";
+
+const statusColor = {
+  예고: {
+    background: "rgb(255, 249, 219)",
+    stroke: "rgb(250, 176, 5)",
+  },
+  검거완료: {
+    background: "rgb(231, 245, 255)",
+    stroke: "rgb(34, 139, 230)",
+  },
+  허위: {
+    background: "rgb(248, 249, 250)",
+    stroke: "rgb(134, 142, 150)",
+  },
+};
 
 const KakaoMap = ({ q }: { q: string | null }) => {
   const mapRef = useRef<any>(null);
@@ -53,7 +68,7 @@ const KakaoMap = ({ q }: { q: string | null }) => {
     }
   }, [threatList]);
 
-  const markerSelect = (index: number) => {
+  const markerSelect = (index: number, lat: number, lng: number) => {
     const mutable = makeMutable(isOpen);
 
     Object.keys(mutable).forEach((key) => {
@@ -62,6 +77,7 @@ const KakaoMap = ({ q }: { q: string | null }) => {
 
     mutable[index] = true;
 
+    setCoordinate({ lat, lng });
     setIsOpen(mutable);
   };
 
@@ -92,10 +108,83 @@ const KakaoMap = ({ q }: { q: string | null }) => {
                 markerClose={markerClose}
               />
             ))}
+
+          {threatList &&
+            threatList.map((threat, index) => (
+              <Circle
+                key={index}
+                center={{
+                  lat: threat.locationLatitude,
+                  lng: threat.locationLongitude,
+                }}
+                radius={200}
+                strokeWeight={1} // 선의 두께입니다
+                strokeColor={`${
+                  statusColor[threat.status as keyof typeof statusColor].stroke
+                }`} // 선의 색깔입니다
+                strokeOpacity={2} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                strokeStyle={"solid"} // 선의 스타일 입니다
+                fillColor={`${
+                  statusColor[threat.status as keyof typeof statusColor]
+                    .background
+                }`} // 채우기 색깔입니다
+                fillOpacity={0.7} // 채우기 불투명도 입니다
+              />
+            ))}
         </Map>
+        <MapTooltip />
       </div>
     </>
   );
 };
 
 export default KakaoMap;
+
+function MapTooltip() {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: "calc(100% - 40px)",
+        right: 0,
+        zIndex: 10,
+        backgroundColor: "#f2ffffb7",
+        border: "1px solid #d1d1d1",
+        borderRight: "none",
+        borderTopLeftRadius: 4,
+        borderBottomLeftRadius: 4,
+        padding: 4,
+        paddingLeft: 12,
+        paddingRight: 12,
+      }}
+    >
+      <span
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 4,
+        }}
+      >
+        <Square background={"rgb(250, 176, 5)"} />
+        <span style={{ color: "rgb(250, 176, 5)" }}>예고</span>
+        <Square background={"rgb(34, 139, 230)"} />
+        <span style={{ color: "rgb(34, 139, 230)" }}>검거완료</span>
+        <Square background={"rgb(134, 142, 150)"} />
+        <span style={{ color: "rgb(134, 142, 150)" }}>허위</span>
+      </span>
+    </div>
+  );
+}
+
+function Square({ background }: { background: string }) {
+  return (
+    <div
+      style={{
+        width: 14,
+        height: 14,
+        backgroundColor: background,
+        border: "1px solid #d1d1d1",
+      }}
+    />
+  );
+}

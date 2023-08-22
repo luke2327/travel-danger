@@ -19,7 +19,7 @@ export default async function handler(
     body = JSON.parse(body);
   }
 
-  // await insertReport(body);
+  await insertReport(body);
 
   res.status(200).json({ result: "SUCCESS" });
 }
