@@ -1,13 +1,19 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Map } from "react-kakao-maps-sdk";
 
 import { makeMutable } from "@/libs/common";
+import mapMatchInfo from "@/libs/mapMatchInfo";
 import type { ServerThreatList, ThreatList } from "@/models/Threat";
 
 import KakaoMapMarker from "./KakaoMapMarker";
 
-const KakaoMap = () => {
+const KakaoMap = ({ q }: { q: string | null }) => {
+  const mapRef = useRef<any>(null);
+  const [coordinate, setCoordinate] = useState<Record<"lat" | "lng", number>>({
+    lat: 37.5054,
+    lng: 127.0071,
+  });
   const [threatList, setThreatList] = useState<ThreatList>([]);
   const [isOpen, setIsOpen] = useState<Record<number, boolean>>({});
   const getThreatList = async () => {
@@ -24,6 +30,15 @@ const KakaoMap = () => {
 
   useEffect(() => {
     getThreatList();
+
+    if (q && mapMatchInfo[q as keyof typeof mapMatchInfo]) {
+      const [lat, lng] = mapMatchInfo[q as keyof typeof mapMatchInfo];
+
+      setCoordinate({
+        lat: parseFloat(lat.toFixed(4)),
+        lng: parseFloat(lng.toFixed(4)),
+      });
+    }
   }, []);
 
   const markerSelect = (index: number) => {
@@ -46,8 +61,11 @@ const KakaoMap = () => {
     <>
       <div style={{ width: "100vw", height: "100vh", position: "absolute" }}>
         <Map
-          center={{ lat: 37.5054, lng: 127.0071 }}
+          center={coordinate}
           style={{ width: "100%", height: "100%" }}
+          level={7}
+          ref={mapRef}
+          isPanto={true}
         >
           {threatList &&
             threatList.map((threat, index) => (
