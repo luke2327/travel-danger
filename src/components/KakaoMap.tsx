@@ -29,7 +29,13 @@ const KakaoMap = ({ q }: { q: string | null }) => {
   };
 
   useEffect(() => {
-    getThreatList();
+    const threatListLocalStorage = localStorage.getItem("threatList");
+
+    if (!threatListLocalStorage || !JSON.parse(threatListLocalStorage).length) {
+      getThreatList();
+    } else {
+      setThreatList(JSON.parse(threatListLocalStorage));
+    }
 
     if (q && mapMatchInfo[q as keyof typeof mapMatchInfo]) {
       const [lat, lng] = mapMatchInfo[q as keyof typeof mapMatchInfo];
@@ -40,6 +46,12 @@ const KakaoMap = ({ q }: { q: string | null }) => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (threatList.length) {
+      localStorage.setItem("threatList", JSON.stringify(threatList));
+    }
+  }, [threatList]);
 
   const markerSelect = (index: number) => {
     const mutable = makeMutable(isOpen);
