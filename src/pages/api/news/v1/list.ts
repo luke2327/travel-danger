@@ -16,7 +16,7 @@ export default async function handler(
 
   let body = req.body as {
     keyword: string;
-    language: "ko" | "ja";
+    language: "ko" | "ja" | "cn";
   };
   if (typeof body === "string") {
     body = JSON.parse(body);
