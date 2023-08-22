@@ -8,26 +8,25 @@ import type { ServerThreatList, ThreatList } from "@/models/Threat";
 
 import KakaoMapMarker from "./KakaoMapMarker";
 
-const statusColor = {
-  예고: {
-    background: "rgb(255, 249, 219)",
-    stroke: "rgb(250, 176, 5)",
-  },
-  검거완료: {
-    background: "rgb(231, 245, 255)",
-    stroke: "rgb(34, 139, 230)",
-  },
-  허위: {
-    background: "rgb(248, 249, 250)",
-    stroke: "rgb(134, 142, 150)",
-  },
-};
-
 const KakaoMap = ({ q }: { q: string | null }) => {
   const mapRef = useRef<any>(null);
   const [coordinate, setCoordinate] = useState<Record<"lat" | "lng", number>>({
     lat: 37.5054,
     lng: 127.0071,
+  });
+  const [statusColor] = useState({
+    예고: {
+      background: "rgb(255, 249, 219)",
+      stroke: "rgb(250, 176, 5)",
+    },
+    검거완료: {
+      background: "rgb(231, 245, 255)",
+      stroke: "rgb(34, 139, 230)",
+    },
+    허위: {
+      background: "rgb(248, 249, 250)",
+      stroke: "rgb(134, 142, 150)",
+    },
   });
   const [threatList, setThreatList] = useState<ThreatList>([]);
   const [isOpen, setIsOpen] = useState<Record<number, boolean>>({});
@@ -114,19 +113,22 @@ const KakaoMap = ({ q }: { q: string | null }) => {
               <Circle
                 key={index}
                 center={{
-                  lat: threat.locationLatitude,
-                  lng: threat.locationLongitude,
+                  lat: threat?.locationLatitude,
+                  lng: threat?.locationLongitude,
                 }}
                 radius={200}
                 strokeWeight={1} // 선의 두께입니다
                 strokeColor={`${
-                  statusColor[threat.status as keyof typeof statusColor].stroke
+                  statusColor[
+                    (threat?.status as keyof typeof statusColor) || "예고"
+                  ].stroke
                 }`} // 선의 색깔입니다
                 strokeOpacity={2} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
                 strokeStyle={"solid"} // 선의 스타일 입니다
                 fillColor={`${
-                  statusColor[threat.status as keyof typeof statusColor]
-                    .background
+                  statusColor[
+                    (threat?.status as keyof typeof statusColor) || "예고"
+                  ].background
                 }`} // 채우기 색깔입니다
                 fillOpacity={0.7} // 채우기 불투명도 입니다
               />
