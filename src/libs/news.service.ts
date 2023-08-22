@@ -5,7 +5,7 @@ import qs from "qs";
 // axios를 활용해 AJAX로 HTML 문서를 가져오는 함수 구현
 export async function getNews(params: {
   keyword: string;
-  language: "ko" | "ja";
+  language: "ko" | "ja" | "cn";
 }) {
   if (params.language === "ko") {
     return getNewsNaver(params);
@@ -14,7 +14,7 @@ export async function getNews(params: {
     return getNewsYahoo(params);
   }
 
-  return [];
+  return getNewsNaver(params);
 }
 
 async function getNewsNaver(params: { keyword: string }) {
@@ -108,4 +108,12 @@ async function getNewsYahoo(params: { keyword: string }) {
   });
 
   return returnData;
+}
+async function getNewsBaidu() {
+  const url =
+    "https://bbs.icnkr.com/search.php?mod=forum&searchid=720&orderby=lastpost&ascdesc=desc&searchsubmit=yes&kw=韩国+谋杀";
+
+  await axios.get(url).then((html) => {
+    console.log(html);
+  });
 }
