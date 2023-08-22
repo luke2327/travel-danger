@@ -96,42 +96,40 @@ const KakaoMap = ({ q }: { q: string | null }) => {
         >
           {threatList &&
             threatList.map((threat, index) => (
-              <KakaoMapMarker
-                key={index}
-                index={index}
-                isOpen={isOpen[index]}
-                threat={threat}
-                lat={threat.locationLatitude}
-                lng={threat.locationLongitude}
-                markerSelect={markerSelect}
-                markerClose={markerClose}
-              />
-            ))}
-
-          {threatList &&
-            threatList.map((threat, index) => (
-              <Circle
-                key={index}
-                center={{
-                  lat: threat?.locationLatitude,
-                  lng: threat?.locationLongitude,
-                }}
-                radius={200}
-                strokeWeight={1} // 선의 두께입니다
-                strokeColor={`${
-                  statusColor[
-                    (threat?.status as keyof typeof statusColor) || "예고"
-                  ].stroke
-                }`} // 선의 색깔입니다
-                strokeOpacity={2} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                strokeStyle={"solid"} // 선의 스타일 입니다
-                fillColor={`${
-                  statusColor[
-                    (threat?.status as keyof typeof statusColor) || "예고"
-                  ].background
-                }`} // 채우기 색깔입니다
-                fillOpacity={0.7} // 채우기 불투명도 입니다
-              />
+              <>
+                <KakaoMapMarker
+                  key={index}
+                  index={index}
+                  isOpen={isOpen[index]}
+                  threat={threat}
+                  lat={threat.locationLatitude}
+                  lng={threat.locationLongitude}
+                  markerSelect={markerSelect}
+                  markerClose={markerClose}
+                />
+                <Circle
+                  key={index}
+                  center={{
+                    lat: threat?.locationLatitude,
+                    lng: threat?.locationLongitude,
+                  }}
+                  radius={200}
+                  strokeWeight={1} // 선의 두께입니다
+                  strokeColor={`${
+                    statusColor[
+                      (threat?.status as keyof typeof statusColor) || "예고"
+                    ]?.stroke
+                  }`} // 선의 색깔입니다
+                  strokeOpacity={2} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                  strokeStyle={"solid"} // 선의 스타일 입니다
+                  fillColor={`${
+                    statusColor[
+                      (threat?.status as keyof typeof statusColor) || "예고"
+                    ]?.background
+                  }`} // 채우기 색깔입니다
+                  fillOpacity={0.7} // 채우기 불투명도 입니다
+                />
+              </>
             ))}
         </Map>
         <MapTooltip />
