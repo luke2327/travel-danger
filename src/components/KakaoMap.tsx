@@ -45,6 +45,8 @@ const KakaoMap = ({
       .post<{ result: ThreatList }>(url, { locale })
       .then((re) => re.data);
 
+    console.log(response);
+
     setThreatList(response.result);
     response.result.forEach((x, index) => {
       setIsOpen({ ...isOpen, [index]: false });
