@@ -13,7 +13,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  await openGate(req, res);
+  // await openGate(req, res);
 
   let body = req.body as {
     keyword: string;
