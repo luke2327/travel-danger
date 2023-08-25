@@ -39,8 +39,8 @@ const KakaoMap = ({
   const [threatList, setThreatList] = useState<ThreatList>([]);
   const [isOpen, setIsOpen] = useState<Record<number, boolean>>({});
   const getThreatList = async () => {
-    // const url = "https://travel-danger.vercel.app/api/threat/v1/list";
-    const url = "http://localhost:3001/api/threat/v1/list";
+    const url = "https://travel-danger.vercel.app/api/threat/v1/list";
+    // const url = "http://localhost:3001/api/threat/v1/list";
     const response = await axios
       .post<{ result: ThreatList }>(url, { locale })
       .then((re) => re.data);
