@@ -14,6 +14,8 @@ export const openGate = async (req: NextApiRequest, res: NextApiResponse) => {
           "fmawo.com",
           "http://fmawo.com",
           "http://daisy.fmawo.com",
+          "https://travel-danger.vercel.app",
+          "vercel.app",
         ];
   await NextCors(req, res, {
     // Options
