@@ -43,7 +43,14 @@ const KakaoMap = ({
     // const url = "http://localhost:3001/api/threat/v1/list";
     const response = await axios
       .post<{ result: ThreatList }>(url, { locale })
-      .then((re) => re.data);
+      .then((re) => re.data)
+      .catch((e) => {
+        console.log("-------------------------");
+        console.log(e);
+        console.log("-------------------------");
+
+        return { result: [] };
+      });
 
     console.log(response);
 
