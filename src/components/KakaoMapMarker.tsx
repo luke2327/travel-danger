@@ -17,29 +17,15 @@ type IKakaoMapMarkerProps = {
   };
   markerSelect: (index: number, lat: number, lng: number) => void;
   markerClose: (index: number) => void;
+  statusClass: string;
 };
 
 const Div = withImportantStyle("div");
 
 export default function (params: IKakaoMapMarkerProps) {
-  const setStatusTextClass = (
-    status: IKakaoMapMarkerProps["threat"]["status"]
-  ) => {
-    if (status === "허위") {
-      return "liarText";
-    }
-    if (status === "예고") {
-      return "cautionText";
-    }
-    if (status === "검거완료") {
-      return "safeText";
-    }
-
-    return "liarText";
-  };
   return (
     <MapMarker
-      key={params.index}
+      key={`kakaoMapMarker${params.index}`}
       position={{ lat: params.lat, lng: params.lng }}
       clickable={true} // 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
       onClick={() => params.markerSelect(params.index, params.lat, params.lng)}
@@ -57,7 +43,7 @@ export default function (params: IKakaoMapMarkerProps) {
           />
           <Typography
             style={{ marginBottom: 0 }}
-            className={setStatusTextClass(params.threat.status)}
+            className={`${params.statusClass}Text`}
           >
             {params.threat.status}
           </Typography>

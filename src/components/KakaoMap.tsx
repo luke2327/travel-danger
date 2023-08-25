@@ -4,26 +4,34 @@ import { Circle, Map } from "react-kakao-maps-sdk";
 
 import { makeMutable } from "@/libs/common";
 import mapMatchInfo from "@/libs/mapMatchInfo";
-import type { ServerThreatList, ThreatList } from "@/models/Threat";
+import type { SupportedLanguage } from "@/models/language";
+import type { ThreatList } from "@/models/Threat";
 
 import KakaoMapMarker from "./KakaoMapMarker";
 
-const KakaoMap = ({ q }: { q: string | null }) => {
+const KakaoMap = ({
+  q,
+  locale,
+}: {
+  q: string | null;
+  locale: SupportedLanguage;
+}) => {
+  console.log(locale);
   const mapRef = useRef<any>(null);
   const [coordinate, setCoordinate] = useState<Record<"lat" | "lng", number>>({
     lat: 37.5054,
     lng: 127.0071,
   });
   const [statusColor] = useState({
-    예고: {
+    caution: {
       background: "rgb(255, 249, 219)",
       stroke: "rgb(250, 176, 5)",
     },
-    검거완료: {
+    safe: {
       background: "rgb(231, 245, 255)",
       stroke: "rgb(34, 139, 230)",
     },
-    허위: {
+    liar: {
       background: "rgb(248, 249, 250)",
       stroke: "rgb(134, 142, 150)",
     },
@@ -31,13 +39,14 @@ const KakaoMap = ({ q }: { q: string | null }) => {
   const [threatList, setThreatList] = useState<ThreatList>([]);
   const [isOpen, setIsOpen] = useState<Record<number, boolean>>({});
   const getThreatList = async () => {
-    const url = "https://travel-danger.vercel.app/api/threat/v1/list";
-    const result = await axios
-      .post<ServerThreatList>(url)
+    // const url = "https://travel-danger.vercel.app/api/threat/v1/list";
+    const url = "http://localhost:3001/api/threat/v1/list";
+    const response = await axios
+      .post<{ result: ThreatList }>(url, { locale })
       .then((re) => re.data);
 
-    setThreatList(result.result.data.json.threats);
-    result.result.data.json.threats.forEach((x, index) => {
+    setThreatList(response.result);
+    response.result.forEach((x, index) => {
       setIsOpen({ ...isOpen, [index]: false });
     });
   };
@@ -61,11 +70,11 @@ const KakaoMap = ({ q }: { q: string | null }) => {
     }
   }, []);
 
-  useEffect(() => {
-    if (threatList.length) {
-      localStorage.setItem("threatList", JSON.stringify(threatList));
-    }
-  }, [threatList]);
+  // useEffect(() => {
+  //   if (threatList.length) {
+  //     localStorage.setItem("threatList", JSON.stringify(threatList));
+  //   }
+  // }, [threatList]);
 
   const markerSelect = (index: number, lat: number, lng: number) => {
     const mutable = makeMutable(isOpen);
@@ -98,7 +107,7 @@ const KakaoMap = ({ q }: { q: string | null }) => {
             threatList.map((threat, index) => (
               <>
                 <KakaoMapMarker
-                  key={index}
+                  key={`marker${index}`}
                   index={index}
                   isOpen={isOpen[index]}
                   threat={threat}
@@ -106,9 +115,10 @@ const KakaoMap = ({ q }: { q: string | null }) => {
                   lng={threat.locationLongitude}
                   markerSelect={markerSelect}
                   markerClose={markerClose}
+                  statusClass={threat.statusClass}
                 />
                 <Circle
-                  key={index}
+                  key={`circle${index}`}
                   center={{
                     lat: threat?.locationLatitude,
                     lng: threat?.locationLongitude,
@@ -116,23 +126,21 @@ const KakaoMap = ({ q }: { q: string | null }) => {
                   radius={200}
                   strokeWeight={1} // 선의 두께입니다
                   strokeColor={`${
-                    statusColor[
-                      (threat?.status as keyof typeof statusColor) || "예고"
-                    ]?.stroke
+                    statusColor[threat?.statusClass as keyof typeof statusColor]
+                      ?.stroke
                   }`} // 선의 색깔입니다
                   strokeOpacity={2} // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
                   strokeStyle={"solid"} // 선의 스타일 입니다
                   fillColor={`${
-                    statusColor[
-                      (threat?.status as keyof typeof statusColor) || "예고"
-                    ]?.background
+                    statusColor[threat?.statusClass as keyof typeof statusColor]
+                      ?.background
                   }`} // 채우기 색깔입니다
                   fillOpacity={0.7} // 채우기 불투명도 입니다
                 />
               </>
             ))}
         </Map>
-        <MapTooltip />
+        <MapTooltip locale={locale} />
       </div>
     </>
   );
@@ -140,7 +148,38 @@ const KakaoMap = ({ q }: { q: string | null }) => {
 
 export default KakaoMap;
 
-function MapTooltip() {
+const tooltipMsgList: Record<
+  SupportedLanguage,
+  { caution: string; safe: string; liar: string }
+> = {
+  ko: {
+    caution: "예고",
+    safe: "검거완료",
+    liar: "허위",
+  },
+  ja: {
+    caution: "予告",
+    safe: "検挙完了",
+    liar: "虚偽",
+  },
+  en: {
+    caution: "Caution",
+    safe: "Arrest",
+    liar: "Falsehood",
+  },
+  cn: {
+    caution: "预告",
+    safe: "检举完毕",
+    liar: "虚伪",
+  },
+  vi: {
+    caution: "sự cảnh báo",
+    safe: "sự giam giữ",
+    liar: "sự hư cấu",
+  },
+};
+
+function MapTooltip({ locale }: { locale: SupportedLanguage }) {
   return (
     <div
       style={{
@@ -166,11 +205,17 @@ function MapTooltip() {
         }}
       >
         <Square background={"rgb(250, 176, 5)"} />
-        <span style={{ color: "rgb(250, 176, 5)" }}>예고</span>
+        <span style={{ color: "rgb(250, 176, 5)" }}>
+          {tooltipMsgList[locale].caution}
+        </span>
         <Square background={"rgb(34, 139, 230)"} />
-        <span style={{ color: "rgb(34, 139, 230)" }}>검거완료</span>
+        <span style={{ color: "rgb(34, 139, 230)" }}>
+          {tooltipMsgList[locale].safe}
+        </span>
         <Square background={"rgb(134, 142, 150)"} />
-        <span style={{ color: "rgb(134, 142, 150)" }}>허위</span>
+        <span style={{ color: "rgb(134, 142, 150)" }}>
+          {tooltipMsgList[locale].liar}
+        </span>
       </span>
     </div>
   );
