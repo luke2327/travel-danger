@@ -34,9 +34,11 @@ import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { openGate } from "@/libs/common";
+import type { SupportedLanguage } from "@/models/language";
 
 type Data = {
   result: any;
+  body: any;
 };
 
 const config = {
@@ -49,6 +51,15 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   await openGate(req, res);
+
+  let body = req.body as {
+    keyword: string;
+    locale: SupportedLanguage;
+  };
+
+  if (typeof body === "string" && body !== "") {
+    body = JSON.parse(body);
+  }
 
   config.url = "https://api.terrorless.01ab.net/trpc/threat.list";
 
@@ -65,5 +76,5 @@ export default async function handler(
     return r;
   });
 
-  res.status(200).json({ result });
+  res.status(200).json({ result, body });
 }
