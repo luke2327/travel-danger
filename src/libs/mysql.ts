@@ -3,10 +3,10 @@ import { createConnection, format } from "mysql2/promise";
 
 async function getConnection(dbName?: "private") {
   return createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: dbName || process.env.DB_DATABASE,
+    host: "faker.cqpmauffywbw.ap-northeast-2.rds.amazonaws.com",
+    user: "admin",
+    password: "asdlkj11411",
+    database: "fmawo.com",
   });
 }
 
