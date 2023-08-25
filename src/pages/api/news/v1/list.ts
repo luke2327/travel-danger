@@ -18,9 +18,10 @@ export default async function handler(
     keyword: string;
     language: "ko" | "ja" | "cn";
   };
-  if (typeof body === "string") {
+  if (typeof body === "string" && body !== "") {
     body = JSON.parse(body);
   }
+
   const response = await getNews(body);
 
   res.status(200).json(response as any);

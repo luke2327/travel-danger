@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 
 import { openGate } from "@/libs/common";
 import { getThreatList } from "@/libs/threat.service";
+import type { SupportedLanguage } from "@/models/language";
 import type { ThreatList } from "@/models/Threat";
 
 type Data = {
@@ -13,9 +14,15 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
   await openGate(req, res);
-  const { body } = req;
 
-  console.log(body);
+  let body = req.body as {
+    keyword: string;
+    locale: SupportedLanguage;
+  };
+
+  if (typeof body === "string" && body !== "") {
+    body = JSON.parse(body);
+  }
 
   const result = await getThreatList(body);
 
