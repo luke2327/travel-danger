@@ -1,38 +1,23 @@
-import type { AxiosRequestConfig } from "axios";
-import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { openGate } from "@/libs/common";
+import { getThreatList } from "@/libs/threat.service";
+import type { ThreatList } from "@/models/Threat";
 
 type Data = {
-  result: any;
+  result: ThreatList;
 };
-
-const config = {
-  method: "get",
-  maxBodyLength: Infinity,
-} as AxiosRequestConfig;
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
   await openGate(req, res);
+  const { body } = req;
 
-  config.url = "https://api.terrorless.01ab.net/trpc/threat.list";
+  console.log(body);
 
-  const response = await axios
-    .request(config)
-    .then((response) => response.data)
-    .catch((error) => {
-      console.log(error);
-    });
+  const result = await getThreatList(body);
 
-  const result = response.result.data.json.threats.map((x: any) => {
-    const { objectType, id, ...r } = x;
-
-    return r;
-  });
-
-  res.status(200).json({ result: { data: { json: { threats: result } } } });
+  res.status(200).json({ result });
 }
