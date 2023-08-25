@@ -29,8 +29,11 @@
         //            "endOfLine": "auto"
         //          }
         //        ],
-        "max-len": ["warn", { "code": 120, "tabWidth": 2, "ignoreComments": true }],
+        "max-len": ["warn", { "code": 160, "tabWidth": 2, "ignoreComments": true }],
         "react/display-name": "off",
+        "implicit-arrow-linebreak": "off",
+        "operator-linebreak": "off",
+        "@typescript-eslint/indent": "off",
         "@typescript-eslint/quotes": "off",
         "react/destructuring-assignment": "off", // Vscode doesn't support automatically destructuring, it's a pain to add a new variable
         "react/require-default-props": "off", // Allow non-defined react props as undefined
