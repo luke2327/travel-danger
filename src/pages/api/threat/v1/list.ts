@@ -34,11 +34,14 @@ import axios from "axios";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { openGate } from "@/libs/common";
+import { getThreatList } from "@/libs/threat.service";
 import type { SupportedLanguage } from "@/models/language";
 
 type Data = {
   result: any;
+  result2: any;
   body: any;
+  msg: any;
 };
 
 const config = {
@@ -70,11 +73,24 @@ export default async function handler(
       console.log(error);
     });
 
+  let result2: any;
+  let msg: any;
+  try {
+    result2 = await getThreatList(body);
+  } catch (e) {
+    msg = (e as any).toString();
+  }
+
   const result = response.result.data.json.threats.map((x: any) => {
     const { objectType, id, ...r } = x;
 
     return r;
   });
 
-  res.status(200).json({ result, body });
+  res.status(200).json({
+    result,
+    body,
+    result2,
+    msg,
+  });
 }
