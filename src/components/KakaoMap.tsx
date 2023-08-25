@@ -42,7 +42,7 @@ const KakaoMap = ({
     const url = "https://travel-danger.vercel.app/api/threat/v1/list";
     // const url = "http://localhost:3001/api/threat/v1/list";
     const response = await axios
-      .get<{ result: ThreatList }>(url, { params: { locale } })
+      .post<{ result: ThreatList }>(url, { params: { locale } })
       .then((re) => re.data)
       .catch((e) => {
         console.log("-------------------------");
