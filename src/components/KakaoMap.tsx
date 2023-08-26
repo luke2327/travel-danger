@@ -16,7 +16,6 @@ const KakaoMap = ({
   q: string | null;
   locale: SupportedLanguage;
 }) => {
-  console.log(locale);
   const mapRef = useRef<any>(null);
   const [coordinate, setCoordinate] = useState<Record<"lat" | "lng", number>>({
     lat: 37.5054,
@@ -51,8 +50,6 @@ const KakaoMap = ({
 
         return { result: [] };
       });
-
-    console.log(response);
 
     setThreatList(response.result);
     response.result.forEach((x, index) => {
