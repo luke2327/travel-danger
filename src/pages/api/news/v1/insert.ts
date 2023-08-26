@@ -1,10 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { openGate } from "@/libs/common";
-import { getNews2 } from "@/libs/news.service";
+import { insertNewsExclusive } from "@/libs/news.service";
+import type { SupportedLanguage } from "@/models/language";
 
 type Data = {
-  name: string;
+  result: string;
 };
 
 export default async function handler(
@@ -15,15 +16,13 @@ export default async function handler(
 
   let body = req.body as {
     keyword: string;
-    language: "ko" | "ja" | "cn";
+    language: SupportedLanguage;
   };
   if (typeof body === "string" && body !== "") {
     body = JSON.parse(body);
   }
 
-  const response = await getNews2(body);
+  await insertNewsExclusive(body.language);
 
-  // await insertNews(response);
-
-  res.status(200).json(response as any);
+  res.status(200).json({ result: "SUCCESS" });
 }
