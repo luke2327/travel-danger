@@ -15,12 +15,18 @@ const getNaverHeader = () => {
     process.env.NAVER_CLIENT_SECRET;
 };
 
-export const translate = async (text: string, to: SupportedLanguage) => {
+export const translate = async (
+  text: string,
+  to: SupportedLanguage,
+  source = "ko"
+) => {
   let target: any = to;
 
   if (to === "cn") {
     target = "zh-CN";
   }
+
+  console.log(source, target);
   const {
     data: {
       message: {
@@ -31,9 +37,13 @@ export const translate = async (text: string, to: SupportedLanguage) => {
     method: "POST",
     url: "https://openapi.naver.com/v1/papago/n2mt",
     params: {
-      source: "ko",
+      source,
       target,
-      text,
+      text: text
+        .replaceAll("[", "")
+        .replaceAll("]", "")
+        .replaceAll("「", "")
+        .replaceAll("」", ""),
     },
     headers: {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",

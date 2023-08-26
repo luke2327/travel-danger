@@ -29,7 +29,6 @@ export const insertThreatList = async (params: { data: ThreatList }) => {
     );
 
     for (const language of diffLanguage) {
-      console.log("LANGUAGE", language);
       const locationName = await translate(row.locationName, language);
       const description = await translate(row.description, language);
       const status = await translate(row.status, language);
