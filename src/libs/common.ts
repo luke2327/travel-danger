@@ -33,3 +33,16 @@ export const sendUrl = async <T extends object = any>({
 
 export const difference = (first: any[], second: any[]) =>
   first.filter((x) => second.indexOf(x) === -1);
+
+export const chunkArray = (arr: any[], chunkCount: number) => {
+  if (chunkCount === 1) return [arr];
+  const chunked = [];
+  let position = 0;
+  for (let i = 0; i < chunkCount; i++) {
+    const chunkLength = Math.ceil((arr.length - position) / (chunkCount - i));
+    chunked.push([]);
+    chunked[i] = arr.slice(position, chunkLength + position);
+    position += chunkLength;
+  }
+  return chunked;
+};

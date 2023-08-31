@@ -26,6 +26,7 @@
     "react-dom": "18.2.0",
     "react-kakao-maps-sdk": "^1.1.11",
     "react-with-important-style": "^0.2.2",
+    "react-wrap-balancer": "^1.1.0",
     "sequelize": "^6.32.1",
     "sequelize-cli": "^6.6.1"
   },
