@@ -9,3 +9,11 @@ export const insertReport = async (params: { content: string }) => {
 
   await queryPromise(queryString);
 };
+
+export const getReport = async () => {
+  const queryString = `
+    SELECT * FROM daisy_report WHERE is_confirm = 1;
+  `;
+
+  return queryPromise(queryString);
+};
