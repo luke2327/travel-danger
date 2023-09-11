@@ -12,9 +12,13 @@ import KakaoMapMarker from "./KakaoMapMarker";
 const KakaoMap = ({
   q,
   locale,
+  lat,
+  lng
 }: {
   q: string | null;
   locale: SupportedLanguage;
+  lat: string;
+  lng: string;
 }) => {
   const mapRef = useRef<any>(null);
   const [coordinate, setCoordinate] = useState<Record<"lat" | "lng", number>>({
@@ -73,6 +77,11 @@ const KakaoMap = ({
         lat: parseFloat(lat.toFixed(4)),
         lng: parseFloat(lng.toFixed(4)),
       });
+    } else if (lat && lng) {
+      setCoordinate({
+        lat: Number(lat),
+        lng: Number(lng),
+      });
     }
   }, []);
 
@@ -109,6 +118,18 @@ const KakaoMap = ({
           ref={mapRef}
           isPanto={true}
         >
+          {(lat && lng) && (
+          <Circle center={{
+            lat: lat as any, lng: lng as any
+          }}
+          radius={600}
+          fillColor="rgb(166, 223, 178)"
+          strokeWeight={1}
+          strokeOpacity={2}
+          strokeStyle={"solid"}
+          fillOpacity={0.5}
+          strokeColor="rgb(90, 195, 102)"
+          />)}
           {threatList &&
             threatList.map((threat, index) => (
               <>
