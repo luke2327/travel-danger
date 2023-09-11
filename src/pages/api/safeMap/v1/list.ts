@@ -10,8 +10,6 @@ type Data = {
   name: string;
 };
 
-type searchType = "09" | "23" | "22" | "20" | "18" | "17";
-
 const auth = {
   id: "10000568",
   apiKey: "c65fe2aac3754104",

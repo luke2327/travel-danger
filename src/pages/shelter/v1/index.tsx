@@ -5,6 +5,10 @@ import KakaoMapShelter from "@/components/KakaoMapShelter";
 
 export default function () {
   const router = useRouter();
+  const params = (router.query as {
+    lat: string;
+    lng: string;
+  }) || { q: "", locale: "en" };
   const [load, setLoad] = useState<boolean>(true);
 
   useEffect(() => {
@@ -13,5 +17,11 @@ export default function () {
     setLoad(false);
   }, [router.isReady]);
 
-  return load ? <div>loading</div> : <KakaoMapShelter></KakaoMapShelter>;
+  return load ? <div style={{
+    width: "100vw",
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignContent: "center" }}
+  >loading</div> : <KakaoMapShelter {...params}></KakaoMapShelter>;
 }

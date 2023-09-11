@@ -32,6 +32,8 @@
         "max-len": ["warn", { "code": 160, "tabWidth": 2, "ignoreComments": true }],
         "react/display-name": "off",
         "object-curly-newline": "off",
+        "func-names": "off",
+        "import/no-anonymous-default-export": "off",
         "implicit-arrow-linebreak": "off",
         "operator-linebreak": "off",
         "@typescript-eslint/indent": "off",

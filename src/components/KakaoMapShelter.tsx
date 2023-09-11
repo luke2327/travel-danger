@@ -8,7 +8,13 @@ import type { ShelterList } from "@/models/safeMapList";
 import shelterListModel from "@/models/safeMapList";
 import KakaoMapMarkerShelter from "./KakaoMapMarkerShelter";
 
-const KakaoMapShelter = () => {
+const KakaoMapShelter = ({
+  lat,
+  lng
+}: {
+  lat: string;
+  lng: string;
+}) => {
   const mapRef = useRef<any>(null);
   const [coordinate, setCoordinate] = useState<Record<"lat" | "lng", number>>({
     lat: 37.5054,
@@ -20,12 +26,18 @@ const KakaoMapShelter = () => {
   const [isOpen, setIsOpen] = useState<Record<number, boolean>>({});
 
   const locationChange = (keyword: string) => {
-    console.log(keyword);
     setShelterList(shelterListModel.filter((x) => x.adres?.includes(keyword)));
   };
 
   useEffect(() => {
     locationChange("서울");
+
+    if (lat && lng) {
+      setCoordinate({
+        lat: Number(lat),
+        lng: Number(lng),
+      });
+    }
   }, []);
 
   const markerSelect = (index: number, lat: number, lng: number) => {
@@ -51,10 +63,24 @@ const KakaoMapShelter = () => {
         <Map
           center={coordinate}
           style={{ width: "100%", height: "100%" }}
-          level={6}
+          level={5}
           ref={mapRef}
           isPanto={true}
         >
+
+          {(lat && lng) && (
+            <Circle center={{
+              lat: lat as any, lng: lng as any
+            }}
+            radius={300}
+            fillColor="rgb(166, 223, 178)"
+            strokeWeight={1}
+            strokeOpacity={2}
+            strokeStyle={"solid"}
+            fillOpacity={0.5}
+            strokeColor="rgb(90, 195, 102)"
+            />
+          )}
           {shelterList &&
             shelterList.map((shelter, index) => (
               <>
