@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import KakaoMap from "@/components/KakaoMap";
 import type { SupportedLanguage } from "@/models/language";
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default function () {
   const router = useRouter();
   const params = (router.query as {
     q: string;
     locale: SupportedLanguage;
+    lat: string;
+    lng: string;
   }) || { q: "", locale: "en" };
   const [load, setLoad] = useState<boolean>(true);
 
