@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import KakaoMap from "@/components/KakaoMap";
 import type { SupportedLanguage } from "@/models/language";
 
-// eslint-disable-next-line import/no-anonymous-default-export
 export default function () {
   const router = useRouter();
   const params = (router.query as {
@@ -21,5 +20,11 @@ export default function () {
     setLoad(false);
   }, [router.isReady]);
 
-  return load ? <div>loading</div> : <KakaoMap {...params}></KakaoMap>;
+  return load ? <div style={{
+    width: "100vw",
+    height: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignContent: "center" }}
+  >loading</div> : <KakaoMap {...params}></KakaoMap>;
 }
